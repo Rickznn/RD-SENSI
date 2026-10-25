@@ -1,0 +1,5 @@
+*.keystore
+*.jks
+*.idsig
+projeto/apk/build/
+projeto/apk-otim/build/
