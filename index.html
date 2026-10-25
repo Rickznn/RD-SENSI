@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RD SENSI">
+<meta name="theme-color" content="#0b0d12">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
+<title>RD SENSI - Sensibilidade Free Fire</title>
+<style>
+  :root{--bg:#0b0d12;--card:#151924;--card2:#1c2130;--txt:#e9ecf3;--mut:#8a93a8;--acc:#ff7a00;--acc2:#ffb800;--ok:#22c55e;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:radial-gradient(circle at top,#1d1408 0,var(--bg) 55%);color:var(--txt);min-height:100vh;padding:18px;padding-top:max(18px,env(safe-area-inset-top));padding-bottom:max(18px,env(safe-area-inset-bottom))}
+  .wrap{max-width:1000px;margin:0 auto}
+  header{text-align:center;margin-bottom:22px}
+  header h1{font-size:clamp(24px,5vw,38px);font-weight:900;letter-spacing:1px;background:linear-gradient(90deg,var(--acc),var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent;text-transform:uppercase}
+  header p{color:var(--mut);margin-top:6px}
+  .brands{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
+  .brand{background:var(--card);border:2px solid transparent;border-radius:14px;padding:14px 6px;text-align:center;cursor:pointer;transition:.2s;font-weight:700;user-select:none}
+  .brand .ic{font-size:26px;display:block;margin-bottom:6px}
+  .brand:hover{border-color:#333b50}
+  .brand.active{border-color:var(--acc);background:linear-gradient(180deg,#2a1a08,var(--card));box-shadow:0 0 18px #ff7a0040}
+  .controls{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px}
+  .ctl{background:var(--card);border-radius:14px;padding:12px 14px}
+  .ctl label{display:block;font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+  #search{width:100%;background:var(--card2);color:var(--txt);border:1px solid #2b3245;border-radius:10px;padding:10px;font-size:15px;margin-bottom:8px;outline:none}
+  #search:focus{border-color:var(--acc)}
+  .brand small{display:block;font-size:11px;color:var(--mut);font-weight:500;margin-top:2px}
+  select{width:100%;background:var(--card2);color:var(--txt);border:1px solid #2b3245;border-radius:10px;padding:10px;font-size:15px}
+  .styles{display:flex;gap:8px}
+  .styles button{flex:1;background:var(--card2);color:var(--txt);border:1px solid #2b3245;border-radius:10px;padding:10px 4px;font-weight:700;cursor:pointer;font-size:13px}
+  .styles button.active{background:var(--acc);border-color:var(--acc);color:#111}
+  .panel{background:var(--card);border-radius:18px;padding:18px;margin-bottom:16px}
+  .ph{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+  .ph h2{font-size:20px}
+  .tags{display:flex;gap:6px;flex-wrap:wrap}
+  .tag{font-size:12px;background:var(--card2);padding:5px 10px;border-radius:999px;color:var(--mut)}
+  .tag b{color:var(--acc2)}
+  .row{display:grid;grid-template-columns:150px 1fr 54px;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #222839}
+  .row:last-child{border-bottom:none}
+  .row .n{font-weight:600}
+  .row .n small{display:block;color:var(--mut);font-weight:400;font-size:11px}
+  .bar{height:12px;background:var(--card2);border-radius:999px;overflow:hidden}
+  .fill{height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:999px;transition:width .5s ease}
+  .val{font-size:20px;font-weight:900;text-align:right;color:var(--acc2)}
+  .extras{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+  .ex{background:var(--card2);border-radius:12px;padding:12px;text-align:center}
+  .ex span{display:block;font-size:11px;color:var(--mut);text-transform:uppercase}
+  .ex b{font-size:18px;display:block;margin-top:4px}
+  .actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+  .btn{flex:1;min-width:160px;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:15px;cursor:pointer}
+  .btn.p{background:linear-gradient(90deg,var(--acc),var(--acc2));color:#111}
+  .btn.s{background:var(--card2);color:var(--txt);border:1px solid #2b3245}
+  .tips{background:var(--card);border-radius:18px;padding:18px}
+  .tips h3{margin-bottom:10px}
+  .tips ul{padding-left:18px;color:#c7cddb;line-height:1.7;font-size:14px}
+  .styles.lv button[data-l="alta"].active{background:#ef4444;border-color:#ef4444;color:#fff}
+  .styles.lv button[data-l="baixa"].active{background:#3b82f6;border-color:#3b82f6;color:#fff}
+  .play{display:flex;align-items:center;gap:14px;background:linear-gradient(90deg,#2a1206,#151924);border:1px solid #ff7a0055;border-radius:18px;padding:14px 16px;margin-bottom:16px;flex-wrap:wrap}
+  .play .t{flex:1;min-width:200px}
+  .play .t b{display:block;font-size:17px}
+  .play .t small{color:var(--mut)}
+  .play .bt{display:flex;gap:8px;flex-wrap:wrap}
+  .play button{border:none;border-radius:12px;padding:12px 16px;font-weight:800;font-size:14px;cursor:pointer;background:linear-gradient(90deg,var(--acc),var(--acc2));color:#111}
+  .play button.max{background:linear-gradient(90deg,#7c3aed,#c026d3);color:#fff}
+  .tabs{display:flex;gap:8px;background:var(--card);padding:6px;border-radius:14px;margin-bottom:16px}
+  .tabs button{flex:1;border:none;background:transparent;color:var(--mut);padding:12px;border-radius:10px;font-weight:800;font-size:15px;cursor:pointer}
+  .tabs button.active{background:linear-gradient(90deg,var(--acc),var(--acc2));color:#111}
+  .only-otim{display:none}
+  body.t-otim .only-sensi{display:none!important}
+  body.t-otim .only-otim{display:block}
+  body.t-otim .controls{grid-template-columns:1fr}
+  .mut{color:var(--mut)}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .stat{background:var(--card2);border-radius:12px;padding:12px}
+  .stat span{display:block;font-size:11px;color:var(--mut);text-transform:uppercase}
+  .stat b{display:block;font-size:18px;margin:4px 0 6px}
+  .stat .bar{height:8px}
+  .warn{color:#ef4444!important}
+  .boost{width:100%;margin-top:14px}
+  .boostRes{margin-top:10px;color:var(--ok);font-weight:700;text-align:center;min-height:1em}
+  .score{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+  .score .bar{flex:1;height:18px}
+  .score b{font-size:26px;color:var(--acc2);min-width:70px;text-align:right}
+  .ck{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #222839}
+  .ck:last-child{border-bottom:none}
+  .ck input{width:22px;height:22px;accent-color:var(--acc);flex-shrink:0}
+  .ck label{flex:1;cursor:pointer}
+  .ck label b{display:block;font-size:15px}
+  .ck label small{color:var(--mut);font-size:12px;line-height:1.4;display:block;margin-top:2px}
+  .ck.done label b{text-decoration:line-through;color:var(--mut)}
+  .ckh{font-size:12px;color:var(--acc2);text-transform:uppercase;letter-spacing:.5px;margin:14px 0 2px}
+  .mini{background:var(--card2);color:var(--txt);border:1px solid #2b3245;border-radius:8px;padding:7px 12px;font-weight:700;font-size:12px;cursor:pointer;flex-shrink:0}
+  .sc{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .sc button{background:var(--card2);color:var(--txt);border:1px solid #2b3245;border-radius:12px;padding:14px 8px;font-weight:700;font-size:13px;cursor:pointer}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--ok);color:#06210f;font-weight:800;padding:12px 20px;border-radius:12px;transition:.3s}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+  footer{text-align:center;color:var(--mut);font-size:12px;margin-top:18px}
+  @media(max-width:900px){.controls{grid-template-columns:1fr 1fr}}
+  @media(max-width:640px){
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .sc{grid-template-columns:repeat(2,1fr)}
+    .brands{grid-template-columns:repeat(3,1fr)}
+    .controls{grid-template-columns:1fr}
+    .row{grid-template-columns:110px 1fr 44px}
+    .extras{grid-template-columns:repeat(2,1fr)}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🔥 RD SENSI</h1>
+    <p>As melhores sensibilidades para Apple, Motorola, Samsung, Poco e Redmi</p>
+  </header>
+
+  <div class="tabs" id="tabs">
+    <button data-t="sensi" class="active">🎯 Sensibilidade</button>
+    <button data-t="otim">⚡ Otimização</button>
+  </div>
+
+  <div class="brands" id="brands"></div>
+
+  <div class="controls">
+    <div class="ctl">
+      <label>Modelo do aparelho</label>
+      <input id="search" type="search" placeholder="🔎 Buscar modelo (ex: A54, iPhone 13, G84)" autocomplete="off">
+      <select id="model"></select>
+    </div>
+    <div class="ctl only-sensi">
+      <label>Estilo de jogo</label>
+      <div class="styles" id="styles">
+        <button data-s="rush">⚡ Rush / Capa</button>
+        <button data-s="equilibrado" class="active">🎯 Equilibrado</button>
+        <button data-s="precisao">🔭 Precisão</button>
+      </div>
+    </div>
+    <div class="ctl only-sensi">
+      <label>Nível de sensibilidade</label>
+      <div class="styles lv" id="levels">
+        <button data-l="alta">🔺 Alta</button>
+        <button data-l="media" class="active">⏺ Média</button>
+        <button data-l="baixa">🔻 Baixa</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="play only-sensi">
+    <div class="t"><b>🎮 Entrar no Free Fire</b><small>Copia sua sensi e abre o jogo direto pelo aplicativo</small></div>
+    <div class="bt">
+      <button id="openFF">▶ Abrir Free Fire</button>
+      <button id="openMAX" class="max">▶ Abrir Free Fire MAX</button>
+    </div>
+  </div>
+
+  <div class="panel only-sensi">
+    <div class="ph">
+      <h2 id="title">—</h2>
+      <div class="tags" id="tags"></div>
+    </div>
+    <div id="rows"></div>
+    <div class="extras" id="extras"></div>
+    <div class="actions">
+      <button class="btn p" id="copy">📋 Copiar sensibilidade</button>
+      <button class="btn s" id="share">📤 Compartilhar</button>
+    </div>
+  </div>
+
+  <div class="tips only-sensi">
+    <h3>💡 Dicas para subir capa</h3>
+    <ul id="tips"></ul>
+  </div>
+
+  <div class="only-otim" id="otim">
+    <div class="panel" id="devCard" style="display:none">
+      <div class="ph"><h2>📱 Seu aparelho</h2><span class="tag" id="devName"></span></div>
+      <div class="stats">
+        <div class="stat"><span>Memória RAM</span><b id="ramTxt">—</b><div class="bar"><div class="fill" id="ramBar" style="width:0"></div></div></div>
+        <div class="stat"><span>Bateria</span><b id="batTxt">—</b></div>
+        <div class="stat"><span>Temperatura</span><b id="tempTxt">—</b></div>
+        <div class="stat"><span>Android</span><b id="andTxt">—</b></div>
+      </div>
+      <button class="btn p boost" id="boost">🚀 Liberar memória</button>
+      <div class="boostRes" id="boostRes"></div>
+    </div>
+
+    <div class="panel">
+      <div class="ph"><h2>⚡ Nível de otimização</h2><span class="tag" id="scoreTag"></span></div>
+      <div class="score"><div class="bar"><div class="fill" id="scoreBar" style="width:0"></div></div><b id="scoreTxt">0%</b></div>
+      <small class="mut">Marque os itens da checklist conforme for fazendo no seu celular.</small>
+    </div>
+
+    <div class="panel">
+      <div class="ph"><h2>🎮 Configurações no Free Fire</h2><span class="tag" id="ffDev"></span></div>
+      <div class="extras" id="ffCfg" style="margin-top:0"></div>
+    </div>
+
+    <div class="panel">
+      <div class="ph"><h2 id="ckTitle">✅ Checklist</h2><button class="mini" id="ckReset">Limpar</button></div>
+      <div id="checklist"></div>
+    </div>
+
+    <div class="panel" id="shortcuts" style="display:none">
+      <div class="ph"><h2>🔗 Atalhos rápidos</h2></div>
+      <div class="sc">
+        <button data-act="display">🖥️ Tela / Hz</button>
+        <button data-act="battery">🔋 Economia de bateria</button>
+        <button data-act="ff">🔥 App Free Fire</button>
+        <button data-act="dev">🛠️ Opções do desenvolvedor</button>
+        <button data-act="storage">💾 Armazenamento</button>
+        <button data-act="wifi">📶 Wi-Fi</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="only-sensi">Valores recomendados como ponto de partida (escala 0–200 do Free Fire). Ajuste ±10 conforme seu dedo e treine no modo Treinamento.</footer>
+</div>
+<div class="toast" id="toast">Copiado!</div>
+
+<script>
+const BRANDS = {
+  apple:   {name:"Apple",    ic:"🍎", base:{geral:100,red:95,x2:90,x4:85,awm:55,olh:75}, dpi:null},
+  motorola:{name:"Motorola", ic:"Ⓜ️", base:{geral:195,red:180,x2:170,x4:160,awm:90,olh:110}, dpi:[480,560]},
+  samsung: {name:"Samsung",  ic:"🌌", base:{geral:190,red:175,x2:165,x4:155,awm:85,olh:105}, dpi:[500,600]},
+  poco:    {name:"Poco",     ic:"🟡", base:{geral:200,red:185,x2:175,x4:165,awm:95,olh:115}, dpi:[480,560]},
+  redmi:   {name:"Redmi",    ic:"🔴", base:{geral:198,red:182,x2:172,x4:162,awm:92,olh:112}, dpi:[480,580]}
+};
+
+// tier: 1 = entrada, 2 = intermediário, 3 = topo | hz = taxa de atualização
+const MODELS = {
+  apple:[["iPhone 6s",1,60],["iPhone 6s Plus",1,60],["iPhone SE (1ª geração)",1,60],["iPhone 7",1,60],["iPhone 7 Plus",1,60],["iPhone 8",1,60],["iPhone 8 Plus",1,60],["iPhone X",1,60],["iPhone XR",1,60],["iPhone XS",1,60],["iPhone XS Max",1,60],["iPhone 11",2,60],["iPhone 11 Pro",2,60],["iPhone 11 Pro Max",2,60],["iPhone SE (2ª geração)",2,60],["iPhone 12 mini",2,60],["iPhone 12",2,60],["iPhone 12 Pro",2,60],["iPhone 12 Pro Max",2,60],["iPhone 13 mini",3,60],["iPhone 13",3,60],["iPhone 13 Pro",3,120],["iPhone 13 Pro Max",3,120],["iPhone SE (3ª geração)",2,60],["iPhone 14",3,60],["iPhone 14 Plus",3,60],["iPhone 14 Pro",3,120],["iPhone 14 Pro Max",3,120],["iPhone 15",3,60],["iPhone 15 Plus",3,60],["iPhone 15 Pro",3,120],["iPhone 15 Pro Max",3,120],["iPhone 16e",3,60],["iPhone 16",3,60],["iPhone 16 Plus",3,60],["iPhone 16 Pro",3,120],["iPhone 16 Pro Max",3,120],["iPhone 17",3,120],["iPhone Air",3,120],["iPhone 17 Pro",3,120],["iPhone 17 Pro Max",3,120],["iPad (9ª geração)",2,60],["iPad (10ª geração)",2,60],["iPad (A16)",3,60],["iPad mini (6ª geração)",3,60],["iPad mini (A17 Pro)",3,60],["iPad Air (M1)",3,60],["iPad Air (M2)",3,60],["iPad Air (M3)",3,60],["iPad Pro (M1/M2)",3,120],["iPad Pro (M4)",3,120]],
+  motorola:[["Moto E6 Play",1,60],["Moto E6s",1,60],["Moto E7",1,60],["Moto E7 Plus",1,60],["Moto E7 Power",1,60],["Moto E13",1,60],["Moto E14",1,90],["Moto E15",1,90],["Moto E20",1,60],["Moto E22",1,90],["Moto E30",1,90],["Moto E32",1,90],["Moto E40",1,90],["Moto G7",1,60],["Moto G7 Play",1,60],["Moto G7 Plus",1,60],["Moto G7 Power",1,60],["Moto G8",1,60],["Moto G8 Play",1,60],["Moto G8 Plus",1,60],["Moto G8 Power",1,60],["Moto G8 Power Lite",1,60],["Moto G9 Play",1,60],["Moto G9 Plus",2,60],["Moto G9 Power",1,60],["Moto G10",1,60],["Moto G20",1,90],["Moto G30",1,90],["Moto G50",1,90],["Moto G60",2,120],["Moto G60s",2,120],["Moto G100",3,90],["Moto G22",1,90],["Moto G31",1,60],["Moto G41",2,60],["Moto G51",2,120],["Moto G52",2,90],["Moto G71",2,60],["Moto G82",2,120],["Moto G200",3,144],["Moto G04",1,90],["Moto G04s",1,90],["Moto G13",1,90],["Moto G14",1,60],["Moto G23",1,90],["Moto G24",1,90],["Moto G24 Power",1,90],["Moto G34",1,120],["Moto G53",2,120],["Moto G54",2,120],["Moto G73",2,120],["Moto G84",2,120],["Moto G05",1,90],["Moto G15",1,90],["Moto G35",1,120],["Moto G45",2,120],["Moto G55",2,120],["Moto G75",2,120],["Moto G85",2,120],["Moto G06",1,90],["Moto G56",2,120],["Moto G86",2,120],["Motorola One",1,60],["Motorola One Vision",1,60],["Motorola One Action",1,60],["Motorola One Hyper",2,60],["Motorola One Fusion",1,60],["Motorola One Fusion+",2,60],["Motorola Edge",3,90],["Motorola Edge+",3,90],["Motorola Edge 20 Lite",2,90],["Motorola Edge 20",2,144],["Motorola Edge 20 Pro",3,144],["Motorola Edge 30",3,144],["Motorola Edge 30 Neo",2,120],["Motorola Edge 30 Fusion",3,144],["Motorola Edge 30 Pro",3,144],["Motorola Edge 30 Ultra",3,144],["Motorola Edge 40 Neo",2,144],["Motorola Edge 40",3,144],["Motorola Edge 40 Pro",3,165],["Motorola Edge 50 Fusion",2,144],["Motorola Edge 50 Neo",2,120],["Motorola Edge 50 Pro",3,144],["Motorola Edge 50 Ultra",3,144],["Motorola Edge 60 Fusion",2,120],["Motorola Edge 60",2,120],["Motorola Edge 60 Pro",3,120],["Motorola Razr 40",3,144],["Motorola Razr 40 Ultra",3,165],["Motorola Razr 50",3,120],["Motorola Razr 50 Ultra",3,165]],
+  samsung:[["Galaxy J2 Core",1,60],["Galaxy J4+",1,60],["Galaxy J5 Prime",1,60],["Galaxy J6",1,60],["Galaxy J7 Prime",1,60],["Galaxy J8",1,60],["Galaxy A01",1,60],["Galaxy A02",1,60],["Galaxy A02s",1,60],["Galaxy A03 Core",1,60],["Galaxy A03",1,60],["Galaxy A03s",1,60],["Galaxy A04e",1,60],["Galaxy A04",1,60],["Galaxy A04s",1,90],["Galaxy A05",1,60],["Galaxy A05s",1,90],["Galaxy A06",1,60],["Galaxy A10",1,60],["Galaxy A10s",1,60],["Galaxy A11",1,60],["Galaxy A12",1,60],["Galaxy A13",1,60],["Galaxy A14",1,60],["Galaxy A14 5G",1,90],["Galaxy A15",1,90],["Galaxy A15 5G",1,90],["Galaxy A16",1,90],["Galaxy A16 5G",1,90],["Galaxy A20",1,60],["Galaxy A20s",1,60],["Galaxy A21s",1,60],["Galaxy A22",1,90],["Galaxy A23",1,90],["Galaxy A24",2,90],["Galaxy A25",2,120],["Galaxy A26",2,120],["Galaxy A30",1,60],["Galaxy A30s",1,60],["Galaxy A31",1,60],["Galaxy A32",1,90],["Galaxy A33",2,90],["Galaxy A34",2,120],["Galaxy A35",2,120],["Galaxy A36",2,120],["Galaxy A50",1,60],["Galaxy A51",2,60],["Galaxy A52",2,90],["Galaxy A52s",2,120],["Galaxy A53",2,120],["Galaxy A54",2,120],["Galaxy A55",2,120],["Galaxy A56",2,120],["Galaxy A70",2,60],["Galaxy A71",2,60],["Galaxy A72",2,90],["Galaxy A73",2,120],["Galaxy M12",1,90],["Galaxy M13",1,60],["Galaxy M14",1,90],["Galaxy M15",1,90],["Galaxy M21s",1,60],["Galaxy M22",1,90],["Galaxy M23",2,120],["Galaxy M31",1,60],["Galaxy M32",1,90],["Galaxy M33",2,120],["Galaxy M34",2,120],["Galaxy M35",2,120],["Galaxy M52",2,120],["Galaxy M53",2,120],["Galaxy M54",2,120],["Galaxy M55",2,120],["Galaxy S10e",2,60],["Galaxy S10",2,60],["Galaxy S10+",2,60],["Galaxy S20",3,120],["Galaxy S20+",3,120],["Galaxy S20 Ultra",3,120],["Galaxy S20 FE",3,120],["Galaxy S21",3,120],["Galaxy S21+",3,120],["Galaxy S21 Ultra",3,120],["Galaxy S21 FE",3,120],["Galaxy S22",3,120],["Galaxy S22+",3,120],["Galaxy S22 Ultra",3,120],["Galaxy S23",3,120],["Galaxy S23+",3,120],["Galaxy S23 Ultra",3,120],["Galaxy S23 FE",3,120],["Galaxy S24",3,120],["Galaxy S24+",3,120],["Galaxy S24 Ultra",3,120],["Galaxy S24 FE",3,120],["Galaxy S25",3,120],["Galaxy S25+",3,120],["Galaxy S25 Ultra",3,120],["Galaxy S25 FE",3,120],["Galaxy Note 10",3,60],["Galaxy Note 10+",3,60],["Galaxy Note 20",3,60],["Galaxy Note 20 Ultra",3,120],["Galaxy Z Flip3",3,120],["Galaxy Z Flip4",3,120],["Galaxy Z Flip5",3,120],["Galaxy Z Flip6",3,120],["Galaxy Z Fold3",3,120],["Galaxy Z Fold4",3,120],["Galaxy Z Fold5",3,120],["Galaxy Z Fold6",3,120],["Galaxy Tab A7",1,60],["Galaxy Tab A8",1,60],["Galaxy Tab A9",1,60],["Galaxy Tab A9+",1,90],["Galaxy Tab S6 Lite",2,60],["Galaxy Tab S7",3,120],["Galaxy Tab S8",3,120],["Galaxy Tab S9 FE",2,90],["Galaxy Tab S9",3,120]],
+  poco:[["Poco F1",2,60],["Poco F2 Pro",3,60],["Poco F3",3,120],["Poco F4",3,120],["Poco F4 GT",3,120],["Poco F5",3,120],["Poco F5 Pro",3,120],["Poco F6",3,120],["Poco F6 Pro",3,120],["Poco F7",3,120],["Poco F7 Pro",3,120],["Poco F7 Ultra",3,120],["Poco X2",2,120],["Poco X3 NFC",2,120],["Poco X3 Pro",2,120],["Poco X3 GT",2,120],["Poco X4 Pro 5G",2,120],["Poco X4 GT",2,144],["Poco X5",2,120],["Poco X5 Pro",2,120],["Poco X6",2,120],["Poco X6 Pro",3,120],["Poco X7",2,120],["Poco X7 Pro",3,120],["Poco M2",1,60],["Poco M2 Pro",1,60],["Poco M3",1,60],["Poco M3 Pro 5G",1,90],["Poco M4 5G",1,90],["Poco M4 Pro",2,90],["Poco M5",1,90],["Poco M5s",1,60],["Poco M6",1,90],["Poco M6 Pro",2,120],["Poco M7 Pro",2,120],["Poco C3",1,60],["Poco C31",1,60],["Poco C40",1,60],["Poco C50",1,60],["Poco C51",1,60],["Poco C55",1,60],["Poco C61",1,90],["Poco C65",1,90],["Poco C71",1,120],["Poco C75",1,90],["Poco Pad",3,120]],
+  redmi:[["Redmi 7",1,60],["Redmi 7A",1,60],["Redmi 8",1,60],["Redmi 8A",1,60],["Redmi 9",1,60],["Redmi 9A",1,60],["Redmi 9C",1,60],["Redmi 9T",1,60],["Redmi 10",1,90],["Redmi 10A",1,60],["Redmi 10C",1,60],["Redmi 10 5G",1,90],["Redmi 12C",1,60],["Redmi 12",1,90],["Redmi 12 5G",1,90],["Redmi 13C",1,90],["Redmi 13",1,90],["Redmi 13 5G",1,120],["Redmi 14C",1,90],["Redmi 15C",1,120],["Redmi A1",1,60],["Redmi A2",1,60],["Redmi A3",1,90],["Redmi A5",1,120],["Redmi Note 7",1,60],["Redmi Note 8",1,60],["Redmi Note 8 Pro",2,60],["Redmi Note 8T",1,60],["Redmi Note 9",1,60],["Redmi Note 9S",2,60],["Redmi Note 9 Pro",2,60],["Redmi Note 10",2,60],["Redmi Note 10S",2,60],["Redmi Note 10 5G",1,90],["Redmi Note 10 Pro",2,120],["Redmi Note 11",2,90],["Redmi Note 11S",2,90],["Redmi Note 11 Pro",2,120],["Redmi Note 11 Pro+ 5G",2,120],["Redmi Note 12",2,120],["Redmi Note 12S",2,90],["Redmi Note 12 5G",2,120],["Redmi Note 12 Pro",2,120],["Redmi Note 12 Pro+",2,120],["Redmi Note 13",2,120],["Redmi Note 13 5G",2,120],["Redmi Note 13 Pro",3,120],["Redmi Note 13 Pro 5G",3,120],["Redmi Note 13 Pro+",3,120],["Redmi Note 14",2,120],["Redmi Note 14 5G",2,120],["Redmi Note 14 Pro",3,120],["Redmi Note 14 Pro 5G",3,120],["Redmi Note 14 Pro+",3,120],["Redmi Pad SE",1,90],["Redmi Pad",2,90],["Redmi Pad Pro",3,120]]
+};
+
+const STYLE_MULT = {rush:{g:1.0,s:1.0,a:1.1}, equilibrado:{g:0.95,s:0.95,a:1.0}, precisao:{g:0.88,s:0.85,a:0.85}};
+const LABELS = [
+  ["geral","Geral","movimento / puxada"],["red","Ponto Vermelho","red dot / holográfica"],["x2","Mira 2x","médio alcance"],
+  ["x4","Mira 4x","longo alcance"],["awm","Mira AWM","sniper"],["olh","Olhadinha","câmera livre"]
+];
+
+let brand="apple", modelIdx=0, style="equilibrado", level="media";
+const LEVEL_MULT={alta:1.15, media:1.0, baixa:0.8};
+const LEVEL_NAME={alta:"Alta",media:"Média",baixa:"Baixa"};
+const LEVEL_DPI={alta:40, media:0, baixa:-40};
+const $=id=>document.getElementById(id);
+const clamp=v=>Math.max(0,Math.min(200,Math.round(v)));
+
+function compute(){
+  const b=BRANDS[brand], [name,tier,hz]=MODELS[brand][modelIdx], m=STYLE_MULT[style];
+  // aparelhos mais fracos / 60Hz respondem pior ao toque -> sensibilidade um pouco maior
+  const tierAdj = tier===1?1.05:tier===2?1.0:0.96;
+  const hzAdj = hz>=120?0.97:hz>=90?1.0:1.03;
+  const k=tierAdj*hzAdj*LEVEL_MULT[level], s={};
+  s.geral=clamp(b.base.geral*k*m.g);
+  s.red=clamp(b.base.red*k*m.s);
+  s.x2=clamp(b.base.x2*k*m.s);
+  s.x4=clamp(b.base.x4*k*m.s);
+  s.awm=clamp(b.base.awm*k*m.a);
+  s.olh=clamp(b.base.olh*k);
+  const dpi=b.dpi?Math.round((b.dpi[0]+(b.dpi[1]-b.dpi[0])*(tier===3?0.3:tier===2?0.6:0.9))/10)*10+LEVEL_DPI[level]:null;
+  const btn = tier===1?"45–50%":tier===2?"50–55%":"55–60%";
+  const ff = ffSettings({tier,hz}), graf = ff.graf+" + FPS "+ff.fps;
+  return {name,tier,hz,s,dpi,btn,graf};
+}
+
+function render(){
+  const r=compute();
+  $("title").textContent=r.name;
+  const tierTxt=["","Entrada","Intermediário","Topo de linha"][r.tier];
+  $("tags").innerHTML=`<span class="tag">Categoria: <b>${tierTxt}</b></span><span class="tag">Tela: <b>${r.hz}Hz</b></span><span class="tag">Estilo: <b>${style[0].toUpperCase()+style.slice(1)}</b></span><span class="tag">Nível: <b>${LEVEL_NAME[level]}</b></span>`;
+  $("rows").innerHTML=LABELS.map(([k,l,d])=>`<div class="row"><div class="n">${l}<small>${d}</small></div><div class="bar"><div class="fill" style="width:0" data-w="${r.s[k]/2}"></div></div><div class="val">${r.s[k]}</div></div>`).join("");
+  requestAnimationFrame(()=>document.querySelectorAll(".fill").forEach(f=>f.style.width=f.dataset.w+"%"));
+  $("extras").innerHTML=`
+    <div class="ex"><span>DPI</span><b>${r.dpi?r.dpi:"Padrão iOS"}</b></div>
+    <div class="ex"><span>Botão de tiro</span><b>${r.btn}</b></div>
+    <div class="ex"><span>Gráficos</span><b style="font-size:14px">${r.graf}</b></div>
+    <div class="ex"><span>Taxa de quadros</span><b>${ffSettings(r).fps}</b></div>`;
+  const tips=[
+    "Ative o <b>Modo Jogo / Game Turbo</b> e feche apps em segundo plano antes da partida.",
+    r.dpi?`Para alterar o DPI: Opções do desenvolvedor → <b>Largura mínima</b> → ${r.dpi}. Reinicie o celular depois.`:"No iPhone não há como mudar o DPI: deixe o <b>Modo de Pouca Energia desligado</b> e desative <b>Ajustes → Acessibilidade → Movimento → Limitar Taxa de Quadros</b> (modelos 120Hz).",
+    "Para subir capa: segure o tiro e <b>puxe o dedo para cima</b> em um movimento rápido em formato de ‘J’.",
+    "Use 3 ou 4 dedos (garra) para mirar e atirar ao mesmo tempo.",
+    "Teste no <b>Modo Treinamento</b> por 10 minutos e ajuste a Geral em ±10 se a mira passar ou não chegar na cabeça.",
+    "Mantenha o celular com bateria acima de 30% e sem superaquecer — o toque fica menos responsivo quando esquenta."
+  ];
+  $("tips").innerHTML=tips.map(t=>`<li>${t}</li>`).join("");
+  if(document.body.classList.contains("t-otim")) renderOtim();
+}
+
+function renderBrands(){
+  $("brands").innerHTML=Object.entries(BRANDS).map(([k,b])=>`<div class="brand ${k===brand?"active":""}" data-b="${k}"><span class="ic">${b.ic}</span>${b.name}<small>${MODELS[k].length} modelos</small></div>`).join("");
+  document.querySelectorAll(".brand").forEach(el=>el.onclick=()=>{brand=el.dataset.b;modelIdx=0;$("search").value="";renderBrands();renderModels();render();});
+}
+function renderModels(){
+  const norm=t=>t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9+]/g,"");
+  const q=norm($("search").value);
+  const opts=[];
+  if(!q){ MODELS[brand].forEach((m,i)=>opts.push([brand+":"+i,m[0]])); }
+  else{
+    Object.keys(MODELS).forEach(b=>MODELS[b].forEach((m,i)=>{
+      if(norm(m[0]+" "+BRANDS[b].name).includes(q)||norm(m[0]).includes(q)) opts.push([b+":"+i,m[0]+" — "+BRANDS[b].name]);
+    }));
+  }
+  if(!opts.length){ $("model").innerHTML='<option disabled selected>Nenhum modelo encontrado</option>'; return; }
+  $("model").innerHTML=opts.map(([v,l])=>`<option value="${v}">${l}</option>`).join("");
+  const cur=brand+":"+modelIdx;
+  if(opts.some(o=>o[0]===cur)) $("model").value=cur;
+  else{ selectModel(opts[0][0]); }
+}
+function selectModel(v){
+  const [b,i]=v.split(":"); brand=b; modelIdx=+i;
+  $("model").value=v; renderBrands(); render();
+}
+$("model").onchange=e=>selectModel(e.target.value);
+$("search").oninput=()=>renderModels();
+document.querySelectorAll("#levels button").forEach(btn=>btn.onclick=()=>{
+  document.querySelectorAll("#levels button").forEach(x=>x.classList.remove("active"));
+  btn.classList.add("active");level=btn.dataset.l;render();
+});
+document.querySelectorAll("#styles button").forEach(btn=>btn.onclick=()=>{
+  document.querySelectorAll("#styles button").forEach(x=>x.classList.remove("active"));
+  btn.classList.add("active");style=btn.dataset.s;render();
+});
+
+function text(){
+  const r=compute();
+  return `🔥 RD SENSI — ${r.name}\nEstilo: ${style} | Nível: ${LEVEL_NAME[level]}\n`+LABELS.map(([k,l])=>`${l}: ${r.s[k]}`).join("\n")+
+    `\nDPI: ${r.dpi||"Padrão iOS"}\nBotão de tiro: ${r.btn}\nGráficos: ${r.graf}`;
+}
+function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1800);}
+async function copyText(){
+  if(window.AndroidApp){AndroidApp.copy(text());return;}
+  try{await navigator.clipboard.writeText(text());}
+  catch{const ta=document.createElement("textarea");ta.value=text();document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();}
+}
+$("copy").onclick=async()=>{await copyText();toast("✅ Sensibilidade copiada!");};
+
+const APPS={
+  ff:{pkg:"com.dts.freefireth", ios:"https://apps.apple.com/br/app/free-fire/id1300146617"},
+  max:{pkg:"com.dts.freefiremax", ios:null}
+};
+const UA=navigator.userAgent;
+const isAndroid=/Android/i.test(UA), isIOS=/iPhone|iPad|iPod/i.test(UA)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+function go(url){ try{ (window.top||window).location.href=url; }catch{ window.location.href=url; } }
+async function openGame(key){
+  const app=APPS[key], store="https://play.google.com/store/apps/details?id="+app.pkg;
+  await copyText();
+  if(isAndroid){
+    toast("✅ Sensi copiada! Abrindo o jogo...");
+    setTimeout(()=>go("intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package="+app.pkg+";S.browser_fallback_url="+encodeURIComponent(store)+";end"),400);
+  }else if(isIOS){
+    if(!app.ios){toast("⚠️ Free Fire MAX não está disponível na App Store do Brasil");return;}
+    toast("✅ Sensi copiada! Toque em ABRIR na App Store");
+    setTimeout(()=>go(app.ios),400);
+  }else{
+    toast("📱 Abra este painel no celular para entrar no jogo");
+    window.open(store,"_blank");
+  }
+}
+$("openFF").onclick=()=>openGame("ff");
+$("openMAX").onclick=()=>openGame("max");
+if(isIOS) $("openMAX").style.display="none";
+$("share").onclick=async()=>{
+  if(window.AndroidApp){AndroidApp.share(text());return;}
+  if(navigator.share){try{await navigator.share({title:"Sensi Free Fire",text:text()});}catch{}}
+  else{window.open("https://wa.me/?text="+encodeURIComponent(text()),"_blank");}
+};
+
+// ===== Otimização =====
+function ffSettings(r){
+  return {
+    graf: r.tier===3?"Ultra":"Suave",
+    fps: (r.tier>=2||r.hz>=90)?"Alta":"Normal",
+    sombra: "Desligada",
+    hd: r.tier===3?"Ligada":"Desligada",
+    brilho: "Máximo",
+    hz: r.hz>60?r.hz+"Hz (máx.)":"60Hz"
+  };
+}
+const HZ_ITEM={xiaomi:"Configurações → Tela → Taxa de atualização → Alta / 120Hz",samsung:"Configurações → Tela → Suavidade de movimento → Alta / Adaptável",motorola:"Configurações → Tela → Taxa de atualização → Alta / Automática"};
+const OTIM={
+  xiaomi:[
+    {id:"gt",t:"Ativar o Game Turbo no Free Fire",p:"Segurança → Game Turbo → adicione o Free Fire → toque na engrenagem → Modo Desempenho"},
+    {id:"bat",t:"Free Fire sem restrição de bateria",p:"Configurações → Apps → Gerenciar apps → Free Fire → Economia de bateria → Sem restrições",act:"ff"},
+    {id:"hz",t:"Taxa de atualização no máximo",p:HZ_ITEM.xiaomi,act:"display",hz:true},
+    {id:"eco",t:"Desligar a Economia de bateria",p:"Configurações → Bateria → Economia de bateria → Desligado",act:"battery"},
+    {id:"anim",t:"Animações em 0.5x",p:"Opções do desenvolvedor → Escala de animação da janela, de transição e do Animator → 0.5x (ative as opções tocando 7x em Versão do MIUI/HyperOS)",act:"dev"},
+    {id:"mem",t:"Desativar \"Otimização de memória\" em segundo plano",p:"Opções do desenvolvedor → desative \"Otimização MIUI\" (se existir) para o jogo não ser fechado",act:"dev"}
+  ],
+  samsung:[
+    {id:"gb",t:"Game Booster em Desempenho",p:"Game Launcher → Free Fire → durante o jogo abra o Game Booster → Prioridade de desempenho → Desempenho"},
+    {id:"bat",t:"Free Fire sem restrição de bateria",p:"Configurações → Aplicativos → Free Fire → Bateria → Sem restrições",act:"ff"},
+    {id:"hz",t:"Suavidade de movimento no máximo",p:HZ_ITEM.samsung,act:"display",hz:true},
+    {id:"eco",t:"Desligar a Economia de energia",p:"Configurações → Bateria → Economia de energia → Desligado",act:"battery"},
+    {id:"care",t:"Otimizar o aparelho antes de jogar",p:"Configurações → Cuidados com o dispositivo → Otimizar agora"},
+    {id:"anim",t:"Animações em 0.5x",p:"Opções do desenvolvedor → Escala de animação (janela, transição e Animator) → 0.5x (ative tocando 7x em Número de compilação)",act:"dev"}
+  ],
+  motorola:[
+    {id:"gt",t:"Ativar o Moto Gametime",p:"App Moto → Jogar (Gametime) → ative e adicione o Free Fire; bloqueie notificações e chamadas durante o jogo"},
+    {id:"bat",t:"Free Fire sem restrição de bateria",p:"Configurações → Apps → Free Fire → Bateria → Sem restrições",act:"ff"},
+    {id:"hz",t:"Taxa de atualização no máximo",p:HZ_ITEM.motorola,act:"display",hz:true},
+    {id:"eco",t:"Desligar a Economia de bateria",p:"Configurações → Bateria → Economia de bateria → Desligado",act:"battery"},
+    {id:"anim",t:"Animações em 0.5x",p:"Opções do desenvolvedor → Escala de animação (janela, transição e Animator) → 0.5x (ative tocando 7x em Número da versão)",act:"dev"}
+  ],
+  apple:[
+    {id:"lpm",t:"Desligar o Modo de Pouca Energia",p:"Ajustes → Bateria → Modo de Pouca Energia → Desligado"},
+    {id:"hz",t:"Desativar Limitar Taxa de Quadros",p:"Ajustes → Acessibilidade → Movimento → Limitar Taxa de Quadros → Desligado",hz:true},
+    {id:"bg",t:"Desligar Atualização em 2º plano",p:"Ajustes → Geral → Atualização em 2º Plano → Desativado (ou só Wi-Fi)"},
+    {id:"focus",t:"Ativar o Foco Não Perturbe",p:"Central de Controle → Foco → Não Perturbe (evita notificações no meio da partida)"},
+    {id:"gm",t:"Modo Jogo (iOS 18 ou mais novo)",p:"Ativa sozinho ao abrir o Free Fire — confira se aparece o aviso \"Modo Jogo ativado\""},
+    {id:"bright",t:"Desligar Brilho automático",p:"Ajustes → Acessibilidade → Tela e Tamanho do Texto → Brilho Automático → Desligado"}
+  ]
+};
+const GENERAL=[
+  {id:"close",t:"Fechar todos os apps em segundo plano",p:"Feche WhatsApp, Instagram, TikTok etc. antes de abrir o jogo"},
+  {id:"reboot",t:"Reiniciar o celular antes de jogar",p:"Limpa a memória e esfria o processador"},
+  {id:"storage",t:"Deixar pelo menos 15% do armazenamento livre",p:"Apague vídeos e apps que não usa — memória cheia causa travamentos",act:"storage"},
+  {id:"net",t:"Internet estável (Wi-Fi 5GHz ou 4G/5G)",p:"Fique perto do roteador e evite downloads durante a partida",act:"wifi"},
+  {id:"heat",t:"Evitar superaquecimento",p:"Não jogue carregando, tire a capinha se esquentar e mantenha a bateria acima de 30%"}
+];
+const brandKey=()=>(brand==="poco"||brand==="redmi")?"xiaomi":brand;
+const ckKey=()=>"rd-ck-"+brandKey();
+function loadCk(){try{return JSON.parse(localStorage.getItem(ckKey())||"{}");}catch{return {};}}
+function saveCk(v){try{localStorage.setItem(ckKey(),JSON.stringify(v));}catch{}}
+let ckMem={};
+
+function renderOtim(){
+  const r=compute(), f=ffSettings(r), bk=brandKey();
+  $("ffDev").textContent=r.name;
+  $("ffCfg").innerHTML=[["Gráficos",f.graf],["Taxa de quadros (FPS)",f.fps],["Sombras",f.sombra],["Alta resolução",f.hd],["Brilho",f.brilho],["Taxa da tela",f.hz]]
+    .map(([a,b])=>`<div class="ex"><span>${a}</span><b>${b}</b></div>`).join("");
+  const items=OTIM[bk].filter(i=>!i.hz||r.hz>60);
+  const brandName=bk==="xiaomi"?"Xiaomi / Poco / Redmi":BRANDS[bk].name;
+  $("ckTitle").textContent="✅ Checklist "+brandName;
+  const st=Object.assign({},ckMem[ckKey()]||loadCk());
+  ckMem[ckKey()]=st;
+  const row=i=>`<div class="ck ${st[i.id]?"done":""}"><input type="checkbox" id="ck-${i.id}" data-id="${i.id}" ${st[i.id]?"checked":""}><label for="ck-${i.id}"><b>${i.t}</b><small>${i.p}</small></label>${i.act&&window.AndroidApp&&bk!=="apple"?`<button class="mini" data-act="${i.act}">Abrir</button>`:""}</div>`;
+  $("checklist").innerHTML=`<div class="ckh">${brandName}</div>`+items.map(row).join("")+`<div class="ckh">Para todos os aparelhos</div>`+GENERAL.map(row).join("");
+  const all=[...items,...GENERAL], done=all.filter(i=>st[i.id]).length, pct=Math.round(done/all.length*100);
+  $("scoreBar").style.width=pct+"%"; $("scoreTxt").textContent=pct+"%";
+  $("scoreTag").innerHTML=`Status: <b>${pct<40?"Fraco 🐢":pct<75?"Bom 👍":pct<100?"Ótimo ⚡":"Máximo 🔥"}</b> · ${done}/${all.length}`;
+  $("checklist").querySelectorAll("input").forEach(cb=>cb.onchange=()=>{st[cb.dataset.id]=cb.checked;saveCk(st);renderOtim();});
+  $("checklist").querySelectorAll("[data-act]").forEach(b=>b.onclick=e=>{e.preventDefault();AndroidApp.openSettings(b.dataset.act);});
+}
+$("ckReset").onclick=()=>{ckMem[ckKey()]={};saveCk({});renderOtim();};
+
+function refreshDev(){
+  if(!window.AndroidApp) return;
+  try{
+    const d=JSON.parse(AndroidApp.deviceInfo());
+    $("devName").innerHTML=`<b>${d.manufacturer||""} ${d.model||""}</b>`;
+    if(d.ramTotal){const used=d.ramTotal-d.ramAvail, pct=Math.round(used/d.ramTotal*100);
+      $("ramTxt").textContent=`${(used/1024).toFixed(1)} / ${(d.ramTotal/1024).toFixed(1)} GB`;
+      $("ramBar").style.width=pct+"%"; $("ramTxt").classList.toggle("warn",pct>85);}
+    if(d.battery!=null){$("batTxt").textContent=d.battery+"%"+(d.charging?" ⚡":""); $("batTxt").classList.toggle("warn",d.battery<30);}
+    if(d.temp){$("tempTxt").textContent=d.temp.toFixed(1)+" °C"+(d.temp>=40?" 🔥":""); $("tempTxt").classList.toggle("warn",d.temp>=40);}
+    $("andTxt").textContent=d.android||"—";
+  }catch(e){}
+}
+$("boost").onclick=()=>{
+  if(!window.AndroidApp) return;
+  const b=$("boost"); b.disabled=true; b.textContent="⏳ Otimizando..."; $("boostRes").textContent="";
+  setTimeout(()=>{
+    try{
+      const r=JSON.parse(AndroidApp.boost()), freed=r.after-r.before;
+      $("boostRes").textContent=`✅ ${r.apps} apps em segundo plano encerrados · `+(freed>0?`${freed} MB liberados`:"memória já estava otimizada");
+    }catch(e){$("boostRes").textContent="Não foi possível otimizar agora";}
+    refreshDev(); b.disabled=false; b.textContent="🚀 Liberar memória";
+  },60);
+};
+document.querySelectorAll("#shortcuts [data-act]").forEach(b=>b.onclick=()=>AndroidApp.openSettings(b.dataset.act));
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("#tabs button").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+  document.body.classList.toggle("t-otim",b.dataset.t==="otim");
+  if(b.dataset.t==="otim"){renderOtim();refreshDev();}
+  window.scrollTo(0,0);
+});
+setInterval(()=>{if(document.body.classList.contains("t-otim"))refreshDev();},5000);
+if(window.AndroidApp){
+  $("devCard").style.display="block"; $("shortcuts").style.display="block";
+  try{const d=JSON.parse(AndroidApp.deviceInfo()), b=((d.brand||"")+" "+(d.manufacturer||"")).toLowerCase();
+    brand=b.includes("poco")?"poco":b.includes("redmi")||b.includes("xiaomi")?"redmi":b.includes("samsung")?"samsung":b.includes("motorola")||b.includes("lenovo")?"motorola":brand;}catch(e){}
+}else if(isIOS){ brand="apple"; }
+
+renderBrands();renderModels();render();
+</script>
+</body>
+</html>
